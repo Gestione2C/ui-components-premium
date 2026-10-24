@@ -7,6 +7,7 @@ export default {
   content: [
     "./index.html",
     "./components/**/*.{js,ts,jsx,tsx}",
+    "./*.{ts,tsx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
   ],
   darkMode: "class",
