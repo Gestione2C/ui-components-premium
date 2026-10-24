@@ -12,12 +12,14 @@ import {
 
 export const HeroParallax = ({
   products,
+  header,
 }: {
   products: {
     title: string;
     link: string;
     thumbnail: string;
   }[];
+  header?: React.ReactNode;
 }) => {
   const firstRow = products.slice(0, 5);
   const secondRow = products.slice(5, 10);
@@ -59,7 +61,7 @@ export const HeroParallax = ({
       ref={ref}
       className="h-[300vh] py-40 overflow-hidden  antialiased relative flex flex-col self-auto [perspective:1000px] [transform-style:preserve-3d]"
     >
-      <Header />
+      {header ?? <Header />}
       <motion.div
         style={{
           rotateX,
