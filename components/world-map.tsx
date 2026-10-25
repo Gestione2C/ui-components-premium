@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { motion } from "motion/react";
 import DottedMap from "dotted-map";
 
-import { useTheme } from "next-themes";
+import { useTheme } from "@/lib/use-theme";
 
 interface MapProps {
   dots?: Array<{
