@@ -2,19 +2,8 @@
 @tailwind components;
 @tailwind utilities;
 
-:root { --volt: #ffd400; --steel: #232321; --ash: #9a978e; --coal: #141412; }
-
-html { scroll-behavior: smooth; background: #0a0a09; }
 body {
   margin: 0;
-  background: #0a0a09;
-  color: #efece4;
-  font-family: "Barlow", system-ui, sans-serif;
-  overflow-x: hidden;
+  background: var(--background);
+  color: var(--foreground);
 }
-.font-display { font-family: "Barlow Condensed", "Arial Narrow", Impact, sans-serif; text-transform: uppercase; line-height: .86; }
-.font-data { font-family: "Space Mono", ui-monospace, monospace; letter-spacing: .2em; text-transform: uppercase; }
-.hex { clip-path: polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%); }
-.cut { clip-path: polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%); }
-a:focus-visible, button:focus-visible { outline: 3px solid var(--volt); outline-offset: 3px; }
-@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
