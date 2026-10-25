@@ -457,4 +457,3 @@ export const DitherShader: React.FC<DitherShaderProps> = ({
   );
 };
 
-export DitherShader;

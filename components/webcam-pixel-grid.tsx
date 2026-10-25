@@ -532,4 +532,3 @@ export const WebcamPixelGrid: React.FC<WebcamPixelGridProps> = ({
   );
 };
 
-export WebcamPixelGrid;

@@ -547,4 +547,3 @@ export function Globe3D({
   );
 }
 
-export Globe3D;
