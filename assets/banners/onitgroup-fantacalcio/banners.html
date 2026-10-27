@@ -1,0 +1,80 @@
+<!doctype html><html lang="it"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Russo+One&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#222;font-family:"Chakra Petch",sans-serif}
+.b{width:1080px;height:1350px;position:relative;overflow:hidden;color:#fff;display:flex;flex-direction:column;padding:110px 90px;margin:0 0 40px}
+.d{font-family:"Russo One",sans-serif}
+.tag{font-size:28px;letter-spacing:.35em;text-transform:uppercase;font-weight:600}
+.cta{white-space:nowrap;display:inline-flex;align-items:center;gap:16px;font-weight:700;font-size:34px;padding:26px 48px;border-radius:999px}
+.logo{display:flex;align-items:center;gap:16px;font-size:38px}
+.logo i{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,#7C3AED,#F43F5E);display:grid;place-items:center}
+.logo svg{width:30px;height:30px}
+.ball svg{display:block}
+/* A neon */
+.a{background:radial-gradient(900px 700px at 50% 38%,#3b1d8a 0%,#0F0F23 70%)}
+.a .pitch{position:absolute;inset:0;opacity:.35}
+.a h1{font-size:270px;line-height:.9;text-align:center;color:#fff;text-shadow:0 0 30px #A78BFA,0 0 90px #7C3AED,0 0 180px #7C3AED}
+.a h1 small{font-size:150px;color:#F43F5E;text-shadow:0 0 30px #F43F5E,0 0 90px #F43F5E}
+/* B bold */
+.bb{background:#F43F5E;color:#0F0F23}
+.bb .big{font-size:340px;line-height:.82;letter-spacing:-.04em;color:#0F0F23}
+.bb .big span{color:#fff}
+/* C glass */
+.c{background:#0F0F23}
+.c .blob{position:absolute;border-radius:50%;filter:blur(110px)}
+.glass{background:rgba(255,255,255,.08);border:2px solid rgba(255,255,255,.22);border-radius:48px;padding:48px;backdrop-filter:blur(30px)}
+.row{display:flex;align-items:center;justify-content:space-between;padding:26px 0;border-bottom:1px solid rgba(255,255,255,.15)}
+.row:last-child{border:0}
+.row b{font-size:64px}
+</style></head><body>
+<svg width="0" height="0"><defs><symbol id="ball" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7l4 3-1.5 4.5h-5L8 10z"/><path d="M12 3v4M16 10l4.5-1M14.5 14.5l3 3.5M9.5 14.5l-3 3.5M8 10L3.5 9"/></g></symbol></defs></svg>
+
+<div class="b a" id="a">
+ <svg class="pitch" viewBox="0 0 1080 1350"><g fill="none" stroke="#A78BFA" stroke-width="3"><rect x="60" y="60" width="960" height="1230" rx="30"/><line x1="60" y1="675" x2="1020" y2="675"/><circle cx="540" cy="675" r="170"/><rect x="290" y="60" width="500" height="200"/><rect x="290" y="1090" width="500" height="200"/></g></svg>
+ <div class="logo d" style="position:relative"><i><svg><use href="#ball"/></svg></i>OnitGroup</div>
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;gap:30px">
+  <div class="tag" style="color:#C4B5FD">Fantacalcio · Stagione 2026/27</div>
+  <h1 class="d">1.000<small>€</small></h1>
+  <div class="d" style="font-size:62px;text-align:center;line-height:1.1">IN PALIO.<br><span style="color:#F43F5E">UNA SOLA CORONA.</span></div>
+ </div>
+ <div style="position:relative;display:flex;justify-content:space-between;align-items:center">
+  <div class="tag" style="font-size:24px;color:#94A3B8">12 squadre · 3 premi</div>
+  <div class="cta" style="background:#F43F5E;color:#000">ISCRIVITI ORA →</div>
+ </div>
+</div>
+
+<div class="b bb" id="b">
+ <div style="display:flex;justify-content:space-between;align-items:center">
+  <div class="logo d" style="color:#0F0F23"><i style="background:#0F0F23"><svg><use href="#ball"/></svg></i>OnitGroup</div>
+  <div class="tag" style="font-size:24px">Stagione 26/27</div>
+ </div>
+ <div style="flex:1;display:flex;flex-direction:column;justify-content:center">
+  <div class="d tag" style="font-size:44px;letter-spacing:.05em;margin-bottom:10px">FANTACALCIO</div>
+  <div class="d big">1000<br><span>EURO</span></div>
+  <div class="d" style="font-size:56px;margin-top:28px;line-height:1.1">PER IL PRESIDENTE<br>CHE SCHIERA MEGLIO.</div>
+ </div>
+ <div style="display:flex;justify-content:space-between;align-items:center">
+  <div class="tag" style="font-size:22px">Asta · Mercato · Gloria</div>
+  <div class="cta" style="background:#0F0F23;color:#fff">ENTRA IN LEGA →</div>
+ </div>
+</div>
+
+<div class="b c" id="c">
+ <div class="blob" style="width:700px;height:700px;background:#7C3AED;left:-200px;top:-150px"></div>
+ <div class="blob" style="width:600px;height:600px;background:#F43F5E;right:-220px;top:380px;opacity:.8"></div>
+ <div class="blob" style="width:520px;height:520px;background:#22C55E;left:-100px;bottom:-200px;opacity:.5"></div>
+ <div class="logo d" style="position:relative"><i><svg><use href="#ball"/></svg></i>OnitGroup</div>
+ <div style="position:relative;margin-top:70px">
+  <div class="tag" style="color:#DDD6FE">Fantacalcio · 2026/27</div>
+  <div class="d" style="font-size:118px;line-height:1;margin-top:18px">Vinci<br>il <span style="color:#FBBF24">montepremi</span></div>
+ </div>
+ <div class="glass" style="position:relative;margin-top:auto">
+  <div class="tag" style="font-size:22px;color:#E2E8F0;margin-bottom:6px">Montepremi totale · 1.000 €</div>
+  <div class="row"><span class="d" style="font-size:44px;color:#FBBF24">1° CAMPIONE</span><b class="d">600 €</b></div>
+  <div class="row"><span class="d" style="font-size:44px;color:#CBD5E1">2° VICE</span><b class="d">250 €</b></div>
+  <div class="row"><span class="d" style="font-size:44px;color:#F59E0B">3° PODIO</span><b class="d">150 €</b></div>
+ </div>
+ <div class="cta" style="position:relative;margin-top:44px;align-self:flex-end;background:#fff;color:#0F0F23">ISCRIVI LA SQUADRA →</div>
+</div>
+</body></html>

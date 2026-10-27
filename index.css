@@ -7,3 +7,41 @@ body {
   background: var(--background);
   color: var(--foreground);
 }
+
+:root {
+  --background: #0f0f23;
+  --foreground: #e2e8f0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: "Chakra Petch", system-ui, sans-serif;
+}
+
+.font-display {
+  font-family: "Russo One", "Chakra Petch", sans-serif;
+  letter-spacing: 0.01em;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Utilities used by text-flipping-board (Tailwind v4 names, not in v3) */
+.perspective-dramatic { perspective: 100px; }
+.transform-3d { transform-style: preserve-3d; }
+.backface-hidden { backface-visibility: hidden; }
+.aspect-3\/5 { aspect-ratio: 3 / 5; }
+.aspect-3\/6 { aspect-ratio: 3 / 6; }
