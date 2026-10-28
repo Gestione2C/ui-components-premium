@@ -7,6 +7,7 @@ import { eur, fmtD, lblM } from "../engine/util";
 import { Badge, Btn, Card, Details, Empty, FIELD, Highlight, Hint, Kpi, KpiGrid, Legend, Note, PageHeader, Pbar, Table, TblBox, WkBar } from "../ui/primitives";
 import { ChartCanvas, gridY, noGrid, tick } from "../ui/Chart";
 import { openModal } from "../ui/overlays";
+import MensBento from "../ui/MensBento";
 import { P } from "../theme";
 import { useS } from "../ui/useS";
 
@@ -128,6 +129,7 @@ export default function Mensile() {
   return (
     <div id="page-mensile">
       {header}
+      {has && !noDone && <MensBento m={m} />}
       <div className="no-print mb-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11.5px] text-cm-muted">
         <b>Soglie per i colori</b> (verde = obiettivo raggiunto):
         {thr("av", "Lavoro completato almeno")}

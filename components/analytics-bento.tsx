@@ -12,12 +12,16 @@ type Point = { label: string; value: number };
 
 export type AnalyticsBentoProps = React.JSX.IntrinsicElements["div"] & {
   currency?: string;
+  /** number formatting locale (default "en-US") */
+  locale?: string;
   revenue: {
     label: string;
     value: number;
     delta: string;
     note?: React.ReactNode;
     caption?: string;
+    /** tooltip row label (default "Revenue") */
+    unit?: string;
     series: Point[];
   };
   sessions: {
@@ -28,10 +32,14 @@ export type AnalyticsBentoProps = React.JSX.IntrinsicElements["div"] & {
     /** values per hour; first array is the current period, the rest are prior periods */
     desktop: number[][];
     mobile: number[][];
+    /** tooltip titles, one per point (default: hour of the day) */
+    pointLabels?: string[];
     labels?: { desktop: string; mobile: string; prior: string; current: string };
   };
   categories: {
     title: string;
+    /** tooltip label for the share row (default "Share") */
+    shareLabel?: string;
     groups: { id: string; name: string; color: string; ink?: "dark" | "light" }[];
     periods: { label: string; total: number; delta: string; compare: string }[];
     /** one value per period, in the same order as `periods` */
@@ -40,6 +48,9 @@ export type AnalyticsBentoProps = React.JSX.IntrinsicElements["div"] & {
   };
   seasonality: {
     title: string;
+    /** tooltip row label (default "Sales") and tab-list aria label (default "Year") */
+    unit?: string;
+    yearLabel?: string;
     axis?: string[];
     years: {
       label: string;
@@ -58,7 +69,8 @@ export type AnalyticsBentoProps = React.JSX.IntrinsicElements["div"] & {
 
 /* ---------------- helpers ---------------- */
 
-const fmt = (n: number) => Math.round(n).toLocaleString("en-US");
+let LOC = "en-US";
+const fmt = (n: number) => Math.round(n).toLocaleString(LOC);
 const ease = (t: number) => 1 - Math.pow(1 - t, 3);
 
 function useReducedMotion() {
@@ -221,7 +233,7 @@ function Segmented({ items, value, onChange, label }: { items: string[]; value: 
 
 /* ---------------- A: revenue line ---------------- */
 
-function RevenueChart({ series, caption, prefix, colors, mono, tip }: { series: Point[]; caption?: string; prefix: string; colors: [string, string]; mono: string; tip: TipRef }) {
+function RevenueChart({ series, caption, unit = "Revenue", prefix, colors, mono, tip }: { series: Point[]; caption?: string; unit?: string; prefix: string; colors: [string, string]; mono: string; tip: TipRef }) {
   const [ref, { w: W, h: H }] = useSize();
   const reduce = useReducedMotion();
   const [drawn, setDrawn] = React.useState(false);
@@ -245,7 +257,7 @@ function RevenueChart({ series, caption, prefix, colors, mono, tip }: { series: 
     const r = (e.currentTarget as SVGRectElement).ownerSVGElement!.getBoundingClientRect();
     const i = Math.max(0, Math.min(vals.length - 1, Math.round(((e.clientX - r.left - 14) / (W - 66)) * (vals.length - 1))));
     setHover(i);
-    tip.current?.show(r.left + P[i][0], r.top + P[i][1], { title: series[i].label, rows: [{ label: "Revenue", value: prefix + fmt(vals[i]), color: colors[1] }] });
+    tip.current?.show(r.left + P[i][0], r.top + P[i][1], { title: series[i].label, rows: [{ label: unit, value: prefix + fmt(vals[i]), color: colors[1] }] });
   };
 
   return (
@@ -300,7 +312,7 @@ function RevenueChart({ series, caption, prefix, colors, mono, tip }: { series: 
 
 /* ---------------- B: desktop vs mobile waves ---------------- */
 
-function SessionsChart({ desktop, mobile, labels, colors, tip }: { desktop: number[][]; mobile: number[][]; labels: { desktop: string; mobile: string; current: string }; colors: { desktop: [string, string]; mobile: [string, string] }; tip: TipRef }) {
+function SessionsChart({ desktop, mobile, pointLabels, labels, colors, tip }: { desktop: number[][]; mobile: number[][]; pointLabels?: string[]; labels: { desktop: string; mobile: string; current: string }; colors: { desktop: [string, string]; mobile: [string, string] }; tip: TipRef }) {
   const [ref, { w: W, h: H }] = useSize();
   const reduce = useReducedMotion();
   const id = React.useId().replace(/:/g, "");
@@ -341,7 +353,7 @@ function SessionsChart({ desktop, mobile, labels, colors, tip }: { desktop: numb
     const i = Math.max(0, Math.min(n - 1, Math.round(((e.clientX - r.left - pad - 6) / (W - 2 * pad - 12)) * (n - 1))));
     setHover(i);
     tip.current?.show(r.left + X(i), r.top + 12, {
-      title: `${String(i % 24).padStart(2, "0")}:00 · ${labels.current}`,
+      title: pointLabels?.[i] ?? `${String(i % 24).padStart(2, "0")}:00 · ${labels.current}`,
       rows: [
         { label: labels.desktop, value: fmt(desktop[0][i]), color: colors.desktop[0] },
         { label: labels.mobile, value: fmt(mobile[0][i]), color: colors.mobile[1] },
@@ -445,7 +457,7 @@ function Treemap({ data, period, mono, tip }: { data: AnalyticsBentoProps["categ
               left: placed ? r.x : W / 2, top: placed ? r.y : H / 2, width: placed ? w : 0, height: placed ? h : 0,
               background: g.color, ["--tile-bg" as string]: g.color,
             }}
-            onPointerMove={(e) => tip.current?.show(e.clientX, e.clientY, { title: `${data.periods[period]?.label} · ${g.name}`, rows: [{ label: r.name, value: fmt(r.v), color: g.color }, { label: "Share", value: share }] })}
+            onPointerMove={(e) => tip.current?.show(e.clientX, e.clientY, { title: `${data.periods[period]?.label} · ${g.name}`, rows: [{ label: r.name, value: fmt(r.v), color: g.color }, { label: data.shareLabel ?? "Share", value: share }] })}
             onPointerLeave={() => tip.current?.hide()}
           >
             <div className="flex items-center gap-1.5 text-[10.5px] font-semibold uppercase tracking-[0.04em]">
@@ -471,7 +483,7 @@ function Treemap({ data, period, mono, tip }: { data: AnalyticsBentoProps["categ
 
 /* ---------------- D: seasonality radar ---------------- */
 
-function Radar({ values, axis, year, color, prefix, mono, tip }: { values: number[]; axis: string[]; year: string; color: string; prefix: string; mono: string; tip: TipRef }) {
+function Radar({ values, axis, year, unit = "Sales", color, prefix, mono, tip }: { values: number[]; axis: string[]; year: string; unit?: string; color: string; prefix: string; mono: string; tip: TipRef }) {
   const [ref, { w }] = useSize();
   const reduce = useReducedMotion();
   const line = React.useRef(null as SVGPathElement | null);
@@ -519,7 +531,7 @@ function Radar({ values, axis, year, color, prefix, mono, tip }: { values: numbe
     let a = Math.atan2(y, x) + Math.PI / 2; if (a < 0) a += Math.PI * 2;
     const i = Math.round((a / (Math.PI * 2)) * N) % N, p = point(values, i);
     setHover(i);
-    tip.current?.show(r.left + p[0], r.top + p[1], { title: `${axis[i]} ${year}`, rows: [{ label: "Sales", value: prefix + fmt(values[i]), color }] });
+    tip.current?.show(r.left + p[0], r.top + p[1], { title: `${axis[i]} ${year}`, rows: [{ label: unit, value: prefix + fmt(values[i]), color }] });
   };
   const hp = hover !== null ? point(values, hover) : null;
 
@@ -600,10 +612,12 @@ export function AnalyticsBento({
   fontFamily = "Geist, ui-sans-serif, system-ui, -apple-system, sans-serif",
   monoFamily = "'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
   credit = true,
+  locale = "en-US",
   className = "",
   style,
   ...rest
 }: AnalyticsBentoProps) {
+  LOC = locale;
   const tip = React.useRef(null as TipApi | null) as TipRef;
   const [period, setPeriod] = React.useState(0);
   const [year, setYear] = React.useState(0);
@@ -641,7 +655,7 @@ export function AnalyticsBento({
               </div>
               {revenue.note && <div className="mt-2 text-[13px] tracking-[-0.01em] text-muted-foreground/80">{revenue.note}</div>}
             </div>
-            <RevenueChart series={revenue.series} caption={revenue.caption} prefix={currency} colors={c.revenue as [string, string]} mono={monoFamily} tip={tip} />
+            <RevenueChart series={revenue.series} caption={revenue.caption} unit={revenue.unit} prefix={currency} colors={c.revenue as [string, string]} mono={monoFamily} tip={tip} />
           </div>
         </Card>
 
@@ -661,7 +675,7 @@ export function AnalyticsBento({
                 {(sessions.desktop.length > 1 || sessions.mobile.length > 1) && <span className="inline-flex items-center gap-1.5"><i className="h-0.5 w-3.5 rounded-sm bg-muted-foreground/50" />{sl.prior}</span>}
               </div>
             </div>
-            <SessionsChart desktop={sessions.desktop} mobile={sessions.mobile} labels={sl} colors={{ desktop: [...c.desktop] as [string, string], mobile: [...c.mobile] as [string, string] }} tip={tip} />
+            <SessionsChart desktop={sessions.desktop} mobile={sessions.mobile} pointLabels={sessions.pointLabels} labels={sl} colors={{ desktop: [...c.desktop] as [string, string], mobile: [...c.mobile] as [string, string] }} tip={tip} />
           </div>
         </Card>
 
@@ -718,12 +732,13 @@ export function AnalyticsBento({
         <Card className={`col-span-12 lg:col-span-5 ${enter(3)}`} aria-label={seasonality.title}>
           <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
             <h2 className="m-0 text-[17px] font-semibold tracking-[-0.02em]">{seasonality.title}</h2>
-            <Segmented label="Year" items={seasonality.years.map((y) => y.label)} value={year} onChange={setYear} />
+            <Segmented label={seasonality.yearLabel ?? "Year"} items={seasonality.years.map((y) => y.label)} value={year} onChange={setYear} />
           </div>
           <Radar
             values={Y.values}
             axis={seasonality.axis ?? ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]}
             year={Y.label}
+            unit={seasonality.unit}
             color={c.radar}
             prefix={currency}
             mono={monoFamily}

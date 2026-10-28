@@ -19,6 +19,11 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // token shadcn usati da components/analytics-bento.tsx (allineati al tema delle commesse)
+        card: { DEFAULT: "#0e1424", foreground: "#e8edf7" },
+        muted: { DEFAULT: "#1a2340", foreground: "#9aa8c4" },
+        border: "#212b45",
+        ring: "#22d3ee",
         // Analizzatore commesse (token definiti in commesse/commesse.css)
         cm: {
           bg: "var(--cm-bg)",
