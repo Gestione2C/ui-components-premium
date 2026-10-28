@@ -9,6 +9,10 @@ import { PRIO_COLORS, PRIO_LABELS } from "../engine/constants";
 import type { Row } from "../engine/types";
 import { useS } from "./useS";
 import { AnimatedValue } from "./AnimatedValue";
+import { Meteors } from "@/components/meteors";
+import { TextGenerateEffect } from "@/components/text-generate-effect";
+import { HoverBorderGradient } from "@/components/hover-border-gradient";
+import { useMotionValue, useSpring, useTransform } from "motion/react";
 
 export const FIELD = "cm-field";
 
@@ -61,36 +65,59 @@ export function Kpi({
   sub,
   color = P.accent,
   tone,
+  alarm,
 }: {
   label: React.ReactNode;
   value: React.ReactNode;
   sub?: React.ReactNode;
   color?: string;
   tone?: "pos" | "neg";
+  /** pioggia di meteore: segnala un valore fuori soglia */
+  alarm?: boolean;
 }) {
+  // leggera inclinazione 3D che segue il mouse
+  const mx = useMotionValue(0);
+  const my = useMotionValue(0);
+  const rx = useSpring(useTransform(my, [-0.5, 0.5], [5, -5]), { stiffness: 220, damping: 20 });
+  const ry = useSpring(useTransform(mx, [-0.5, 0.5], [-6, 6]), { stiffness: 220, damping: 20 });
+  const move = (e: React.PointerEvent<HTMLDivElement>) => {
+    const r = e.currentTarget.getBoundingClientRect();
+    mx.set((e.clientX - r.left) / r.width - 0.5);
+    my.set((e.clientY - r.top) / r.height - 0.5);
+  };
+  const leave = () => {
+    mx.set(0);
+    my.set(0);
+  };
   return (
     <motion.div
       variants={KPI_ITEM}
+      onPointerMove={move}
+      onPointerLeave={leave}
+      style={{ rotateX: rx, rotateY: ry, transformPerspective: 700, ["--kc" as any]: color }}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.15 }}
       className="relative overflow-hidden rounded-xl border border-cm-line bg-cm-surface p-3.5"
-      style={{ ["--kc" as any]: color }}
     >
       <span className="absolute inset-x-0 top-0 h-[2px]" style={{ background: color }} />
       <GlowingEffect spread={30} glow disabled={false} proximity={40} inactiveZone={0.3} borderWidth={1.5} />
+      {alarm && (
+        <div className="no-print pointer-events-none absolute inset-0 overflow-hidden motion-reduce:hidden" aria-hidden="true">
+          <Meteors number={8} className="!bg-cm-bad before:!from-cm-bad" />
+        </div>
+      )}
       <div className="relative">
         <div className="mb-1.5 font-cmmono text-[10.5px] uppercase tracking-[0.08em] text-cm-muted">{label}</div>
         <div className="num mb-1 text-[26px] font-semibold leading-none" style={{ color }}>
           <AnimatedValue value={value} />
         </div>
         <div className={cn("text-[11px] leading-snug text-cm-faint", tone === "pos" && "!text-cm-ok", tone === "neg" && "!text-cm-bad")}>
-          {sub || " "}
+          {sub || "\u00a0"}
         </div>
       </div>
     </motion.div>
   );
 }
-/** Griglia KPI: le tessere entrano una dopo l'altra. */
 export const KpiGrid = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <motion.div
     initial="hidden"
@@ -138,6 +165,20 @@ export function Badge({ kind = "neu", children, className }: { kind?: keyof type
   );
 }
 
+/** Pulsante con bordo luminoso che gira (HoverBorderGradient di ui-components-premium). */
+export function GlowBtn({ children, onClick, className }: { children: React.ReactNode; onClick?: () => void; className?: string }) {
+  return (
+    <HoverBorderGradient
+      as="button"
+      onClick={onClick}
+      containerClassName="rounded-lg"
+      className={cn("flex cursor-pointer items-center gap-1.5 bg-cm-surface2 px-3.5 py-1.5 font-cmmono text-xs font-semibold text-cm-ink", className)}
+    >
+      {children}
+    </HoverBorderGradient>
+  );
+}
+
 type BtnProps = React.ButtonHTMLAttributes<HTMLButtonElement> & { variant?: "p" | "s" | "d" | "g"; size?: "sm" | "md" };
 export const Btn = React.forwardRef<HTMLButtonElement, BtnProps>(function Btn({ variant = "s", size = "md", className, ...p }, ref) {
   return (
@@ -168,7 +209,12 @@ export function PageHeader({ icon, title, desc, right }: { icon?: React.ReactNod
         </h1>
         {right}
       </div>
-      {desc && <p className="no-print mb-4 max-w-[900px] text-[13px] text-cm-faint">{desc}</p>}
+      {desc && (
+        <div className="no-print mb-4 max-w-[900px]">
+          <span className="sr-only">{desc}</span>
+          <TextGenerateEffect words={desc} compact filter staggerDelay={0.035} duration={0.45} className="text-[13px]" wordClassName="!text-cm-faint" />
+        </div>
+      )}
     </>
   );
 }
@@ -236,7 +282,7 @@ export function Highlight({ big, color, children }: { big: React.ReactNode; colo
   return (
     <div className="mb-3.5 flex items-center gap-4 rounded-xl border border-cm-line border-l-4 border-l-cm-accent bg-gradient-to-r from-cm-accent/[0.07] to-transparent px-4 py-3.5 text-[13px] leading-snug">
       <div className="num whitespace-nowrap text-[28px] font-bold" style={{ color: color || undefined }}>
-        {big}
+        <AnimatedValue value={big} />
       </div>
       <div>{children}</div>
     </div>

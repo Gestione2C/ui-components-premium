@@ -8,11 +8,19 @@ export const TextGenerateEffect = ({
   className,
   filter = true,
   duration = 0.5,
+  staggerDelay = 0.2,
+  compact = false,
+  wordClassName,
 }: {
   words: string;
   className?: string;
   filter?: boolean;
   duration?: number;
+  /** seconds between words (default 0.2) */
+  staggerDelay?: number;
+  /** drop the default top margin / large type so it can be used for body copy */
+  compact?: boolean;
+  wordClassName?: string;
 }) => {
   const [scope, animate] = useAnimate();
   let wordsArray = words.split(" ");
@@ -25,7 +33,7 @@ export const TextGenerateEffect = ({
       },
       {
         duration: duration ? duration : 1,
-        delay: stagger(0.2),
+        delay: stagger(staggerDelay),
       }
     );
   }, [scope.current]);
@@ -37,7 +45,7 @@ export const TextGenerateEffect = ({
           return (
             <motion.span
               key={word + idx}
-              className="dark:text-white text-black opacity-0"
+              className={cn("dark:text-white text-black opacity-0", wordClassName)}
               style={{
                 filter: filter ? "blur(10px)" : "none",
               }}
@@ -51,9 +59,9 @@ export const TextGenerateEffect = ({
   };
 
   return (
-    <div className={cn("font-bold", className)}>
-      <div className="mt-4">
-        <div className=" dark:text-white text-black text-2xl leading-snug tracking-wide">
+    <div className={cn(!compact && "font-bold", className)}>
+      <div className={cn(!compact && "mt-4")}>
+        <div className={cn("dark:text-white text-black leading-snug", !compact && "text-2xl tracking-wide")}>
           {renderWords()}
         </div>
       </div>

@@ -95,7 +95,7 @@ export default function Panoramica() {
       <KpiGrid>
         <Kpi label="Commesse aperte" value={n} sub={dt(n, prev?.length, true)} color={ritCol} />
         <Kpi label="Completate" value={completate} color={P.ok} />
-        <Kpi label="In ritardo" value={inRit} sub={dt(inRit, prev?.filter((r) => r.in_ritardo).length, true)} color={P.bad} />
+        <Kpi alarm={inRit / n > 0.3} label="In ritardo" value={inRit} sub={dt(inRit, prev?.filter((r) => r.in_ritardo).length, true)} color={P.bad} />
         <Kpi label="% Ritardo" value={n ? Math.round((inRit / n) * 100) + "%" : "—"} color={inRit / n > 0.5 ? P.bad : inRit / n > 0.3 ? P.orange : P.ok} />
         <Kpi label="Ritardo medio" value={ritMed + " gg"} color={P.orange} />
         <Kpi label="Età media" value={etaMed + " gg"} color={P.info} />

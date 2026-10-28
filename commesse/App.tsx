@@ -5,7 +5,7 @@ import Toast from "./ui/Toast";
 import Backdrop from "./ui/Backdrop";
 import { PAGES } from "./views";
 import { S } from "./engine/state";
-import { Btn, Empty } from "./ui/primitives";
+import { Empty, GlowBtn } from "./ui/primitives";
 import { useS } from "./ui/useS";
 import { GoContext } from "./ui/go";
 import CommessaModal from "./modals/CommessaModal";
@@ -27,9 +27,7 @@ export default function App() {
             {blocked ? (
               <div className="mt-16 flex flex-col items-center gap-3 text-center">
                 <Empty>Carica i file delle commesse per vedere questa pagina.</Empty>
-                <Btn variant="p" onClick={() => setPage("upload")}>
-                  Vai a Carica file
-                </Btn>
+                <GlowBtn onClick={() => setPage("upload")}>Vai a Carica file</GlowBtn>
               </div>
             ) : (
               <PageHost id={def.id} onGo={setPage} />

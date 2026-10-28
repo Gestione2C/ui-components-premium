@@ -4,9 +4,25 @@ import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Sidebar, DesktopSidebar, useSidebar } from "@/components/sidebar";
 import type { PageDef } from "../views";
+import { S, cwRowsOpen, openBlocks } from "../engine/state";
+import { azOpen } from "../engine/calc";
+import { P } from "../theme";
+import { useS } from "./useS";
+
+/** Contatori "vivi" sulle voci di menu: quante cose richiedono attenzione. */
+function badgeOf(id: string): { n: number; color: string } | null {
+  if (!S.rows.length) return null;
+  const open = cwRowsOpen();
+  if (id === "scadenze") return { n: open.filter((r) => r.in_ritardo).length, color: P.bad };
+  if (id === "bloccanti") return { n: open.reduce((a, r) => a + openBlocks(r.n).length, 0), color: P.orange };
+  if (id === "azioni") return { n: azOpen().length, color: P.warn };
+  return null;
+}
 
 function NavItem({ p, active, onGo }: { p: PageDef; active: boolean; onGo: () => void }) {
   const { open, animate } = useSidebar();
+  useS();
+  const badge = badgeOf(p.id);
   const Icon = p.icon;
   return (
     <button
@@ -26,9 +42,27 @@ function NavItem({ p, active, onGo }: { p: PageDef; active: boolean; onGo: () =>
           className="absolute inset-0 border-l-2 border-cm-accent bg-cm-accent/[0.08]"
         />
       )}
-      <Icon size={18} className="relative shrink-0" />
+      <span className="relative shrink-0">
+        <Icon size={18} />
+        {badge && badge.n > 0 && (
+          <motion.span
+            key={badge.n}
+            initial={{ scale: 0.4 }}
+            animate={{ scale: 1 }}
+            transition={{ type: "spring", stiffness: 500, damping: 16 }}
+            className="absolute -right-1.5 -top-1.5 h-2 w-2 rounded-full"
+            style={{ background: badge.color, boxShadow: `0 0 0 0 ${badge.color}` }}
+            aria-hidden="true"
+          />
+        )}
+      </span>
       <motion.span animate={{ opacity: animate ? (open ? 1 : 0) : 1 }} className="relative whitespace-nowrap">
         {p.label}
+        {badge && badge.n > 0 && (
+          <span className="num ml-2 rounded-full px-1.5 py-px text-[10px] font-semibold" style={{ background: badge.color + "26", color: badge.color }}>
+            {badge.n}
+          </span>
+        )}
       </motion.span>
     </button>
   );

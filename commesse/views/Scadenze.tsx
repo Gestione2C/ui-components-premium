@@ -6,6 +6,7 @@ import { ChartCanvas, gridY, noGrid, tick, valLabels } from "../ui/Chart";
 import { openModal } from "../ui/overlays";
 import { fdIt, fmtD } from "../engine/util";
 import { P } from "../theme";
+import AllGood from "../ui/AllGood";
 import { useS } from "../ui/useS";
 import type { Row } from "../engine/types";
 
@@ -231,7 +232,7 @@ export default function Scadenze() {
             {iss.length > 60 && <div className="px-4 py-2 text-[11px] text-cm-faint">…e altre {iss.length - 60}</div>}
           </>
         ) : (
-          <div className="px-4 py-3 text-[12px] text-cm-ok">Nessuna anomalia rilevata</div>
+          <AllGood>Nessuna anomalia rilevata</AllGood>
         )}
       </Card>
 

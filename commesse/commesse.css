@@ -158,6 +158,30 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding: 6px 8px;
 }
 
+/* le prime righe di ogni tabella entrano una dopo l'altra */
+@keyframes cm-row {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.cm-table tbody tr {
+  animation: cm-row 0.35s both;
+}
+.cm-table tbody tr:nth-child(1) { animation-delay: 0ms; }
+.cm-table tbody tr:nth-child(2) { animation-delay: 30ms; }
+.cm-table tbody tr:nth-child(3) { animation-delay: 60ms; }
+.cm-table tbody tr:nth-child(4) { animation-delay: 90ms; }
+.cm-table tbody tr:nth-child(5) { animation-delay: 120ms; }
+.cm-table tbody tr:nth-child(6) { animation-delay: 150ms; }
+.cm-table tbody tr:nth-child(7) { animation-delay: 180ms; }
+.cm-table tbody tr:nth-child(8) { animation-delay: 210ms; }
+.cm-table tbody tr:nth-child(n + 9) { animation-delay: 240ms; }
+
 @keyframes cm-fade {
   from {
     opacity: 0;

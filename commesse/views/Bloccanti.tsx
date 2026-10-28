@@ -8,6 +8,7 @@ import { Badge, Btn, Card, FIELD, PageHeader, Stat, Table, TblBox, WkBar } from 
 import { ChartCanvas, gridY, noGrid, tick } from "../ui/Chart";
 import { openModal } from "../ui/overlays";
 import { P } from "../theme";
+import AllGood from "../ui/AllGood";
 import { useS } from "../ui/useS";
 
 const TIPO_ICON: Record<string, React.ReactNode> = {
@@ -209,7 +210,7 @@ export default function Bloccanti() {
               ) : (
                 <tr>
                   <td colSpan={7} className="py-5 text-center text-cm-faint">
-                    Nessuna condizione bloccante {of === "1" ? "aperta" : ""} trovata
+                    <AllGood>Nessuna condizione bloccante {of === "1" ? "aperta" : ""} trovata</AllGood>
                   </td>
                 </tr>
               )}
