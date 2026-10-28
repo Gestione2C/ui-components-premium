@@ -1,0 +1,12 @@
+{
+  "name": "I miei Componenti UI",
+  "description": "Libreria di componenti premium per Claude",
+  "plugins": [
+    {"id": "mio-componente-ui",
+      "name": "Componenti Premium UI",
+      "version": "1.0.0",
+      "description": "Descrizione del plugin",
+      "path": "./"
+    }
+  ]
+}
