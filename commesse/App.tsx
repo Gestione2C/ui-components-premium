@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Header from "./ui/Header";
 import { Nav } from "./ui/Nav";
 import Toast from "./ui/Toast";
+import Backdrop from "./ui/Backdrop";
 import { PAGES } from "./views";
 import { S } from "./engine/state";
 import { Btn, Empty } from "./ui/primitives";
@@ -16,9 +17,10 @@ export default function App() {
   const def = PAGES.find((p) => p.id === page) || PAGES[0];
   const blocked = !S.rows.length && !def.standalone;
   return (
-    <div className="flex h-screen flex-col bg-cm-bg">
+    <div className="relative flex h-screen flex-col bg-cm-bg">
+      <Backdrop />
       <Header />
-      <div className="cm-shell flex min-h-0 flex-1">
+      <div className="cm-shell relative z-[1] flex min-h-0 flex-1">
         <Nav pages={PAGES} page={page} onGo={setPage} />
         <main className="cm-main min-w-0 flex-1 overflow-y-auto px-4 py-5 md:px-6">
           <div key={def.id} className="cm-fade mx-auto max-w-[1500px]">

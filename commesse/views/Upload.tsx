@@ -3,6 +3,9 @@ import { useDropzone } from "react-dropzone";
 import { motion } from "motion/react";
 import { FileSpreadsheet, FolderUp, Info, X } from "lucide-react";
 import { Button as StatefulButton } from "@/components/stateful-button";
+import { MultiStepLoader } from "@/components/multi-step-loader";
+import { FlipWords } from "@/components/flip-words";
+import { Spotlight } from "@/components/spotlight-new";
 import { GridPattern } from "@/components/file-upload";
 import { S } from "../engine/state";
 import { handleFiles, removeFile, runParse } from "../engine/actions";
@@ -10,6 +13,15 @@ import { Card, PageHeader } from "../ui/primitives";
 import { useS } from "../ui/useS";
 import { useGo } from "../ui/go";
 import { cn } from "@/lib/utils";
+
+const STEPS = [
+  { text: "Lettura dei file Excel" },
+  { text: "Riconoscimento colonne, date e colori di riga" },
+  { text: "Aggancio delle righe d'ordine alle commesse" },
+  { text: "Calcolo di ritardi e scadenze" },
+  { text: "Unificazione dei clienti e preparazione dei grafici" },
+];
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 export default function Upload() {
   useS();
@@ -25,14 +37,31 @@ export default function Upload() {
     },
   });
 
+  const [loading, setLoading] = React.useState(false);
   const analyze = async () => {
-    const res = await runParse();
-    if (res.ok > 0) setTimeout(() => go("panoramica"), 700);
+    setLoading(true);
+    // il calcolo è quasi istantaneo: i passaggi restano visibili abbastanza da essere letti
+    const [res] = await Promise.all([runParse(), sleep(2300)]);
+    setLoading(false);
+    if (res.ok > 0) go("panoramica");
   };
 
   return (
     <div>
-      <PageHeader icon={<FolderUp size={22} />} title="Carica file commesse" />
+      <MultiStepLoader loadingStates={STEPS} loading={loading} duration={430} loop={false} />
+      <div className="relative mb-5 overflow-hidden rounded-2xl border border-cm-line bg-cm-surface/80 px-6 py-7">
+        <Spotlight />
+        <div className="relative">
+          <h1 className="flex items-center gap-2.5 text-2xl font-semibold tracking-tight">
+            <FolderUp size={26} className="text-cm-accent" aria-hidden="true" />
+            Carica file commesse
+          </h1>
+          <div className="mt-2 text-[15px] text-cm-muted">
+            Capisci subito dove sono{" "}
+            <FlipWords words={["i ritardi", "i bloccanti", "le scadenze", "il valore da consegnare", "il carico dei reparti"]} className="!px-1 font-semibold text-cm-accent" />
+          </div>
+        </div>
+      </div>
       <div
         {...getRootProps()}
         onClick={open}

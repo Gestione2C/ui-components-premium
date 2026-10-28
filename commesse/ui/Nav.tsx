@@ -15,12 +15,19 @@ function NavItem({ p, active, onGo }: { p: PageDef; active: boolean; onGo: () =>
       aria-current={active ? "page" : undefined}
       title={p.label}
       className={cn(
-        "group/nav flex w-full cursor-pointer items-center gap-3 border-l-2 px-[17px] py-2.5 text-left font-cmmono text-xs transition-colors duration-150",
-        active ? "border-cm-accent bg-cm-accent/[0.07] text-cm-accent" : "border-transparent text-cm-muted hover:bg-white/[0.03] hover:text-cm-ink",
+        "group/nav relative flex w-full cursor-pointer items-center gap-3 px-[19px] py-2.5 text-left font-cmmono text-xs transition-colors duration-150",
+        active ? "text-cm-accent" : "text-cm-muted hover:bg-white/[0.03] hover:text-cm-ink",
       )}
     >
-      <Icon size={18} className="shrink-0" />
-      <motion.span animate={{ opacity: animate ? (open ? 1 : 0) : 1 }} className="whitespace-nowrap">
+      {active && (
+        <motion.span
+          layoutId="nav-pill"
+          transition={{ type: "spring", stiffness: 420, damping: 34 }}
+          className="absolute inset-0 border-l-2 border-cm-accent bg-cm-accent/[0.08]"
+        />
+      )}
+      <Icon size={18} className="relative shrink-0" />
+      <motion.span animate={{ opacity: animate ? (open ? 1 : 0) : 1 }} className="relative whitespace-nowrap">
         {p.label}
       </motion.span>
     </button>

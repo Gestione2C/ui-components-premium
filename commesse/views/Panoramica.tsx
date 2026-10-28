@@ -1,7 +1,11 @@
 import React from "react";
 import { BarChart3 } from "lucide-react";
 import { S, cwRowsCompletate, cwRowsOpen, getWKs, isDone } from "../engine/state";
-import { Card, Delta, Kpi, Legend, PageHeader, WkBar } from "../ui/primitives";
+import { Card, Delta, Kpi, KpiGrid, Legend, PageHeader, WkBar } from "../ui/primitives";
+import { InfiniteMovingCards } from "@/components/infinite-moving-cards";
+import { openModal } from "../ui/overlays";
+import { ownerName, openBlocks } from "../engine/state";
+import { critScore } from "../engine/calc";
 import { ChartCanvas, gridY, noGrid, tick } from "../ui/Chart";
 import { P } from "../theme";
 import { useS } from "../ui/useS";
@@ -38,6 +42,13 @@ export default function Panoramica() {
   const prev = prevWK ? S.rows.filter((r) => !isDone(r) && r.wk === prevWK) : null;
   const dt = (cur: number, old: number | undefined, inv = false) => <Delta cur={cur} old={old} inv={inv} prev={prevWK} />;
   const ritCol = inRit / n > 0.5 ? P.bad : inRit / n > 0.3 ? P.orange : P.accent;
+
+  // fascia scorrevole: stessa classifica di "Da decidere oggi" del report
+  const crit = rows
+    .map((r) => ({ r, b: openBlocks(r.n).length, sc: critScore(r) }))
+    .filter((x) => x.sc > 0)
+    .sort((a, b) => b.sc - a.sc)
+    .slice(0, 8);
 
   // Stato donut
   const stMap: Record<string, number> = {};
@@ -81,7 +92,7 @@ export default function Panoramica() {
         desc="Quadro generale delle commesse aperte: quante sono, quante in ritardo e dove stanno i problemi."
         right={<WkBar />}
       />
-      <div className="mb-4 grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-2.5">
+      <KpiGrid>
         <Kpi label="Commesse aperte" value={n} sub={dt(n, prev?.length, true)} color={ritCol} />
         <Kpi label="Completate" value={completate} color={P.ok} />
         <Kpi label="In ritardo" value={inRit} sub={dt(inRit, prev?.filter((r) => r.in_ritardo).length, true)} color={P.bad} />
@@ -91,7 +102,27 @@ export default function Panoramica() {
         <Kpi label="Parz. concluse" value={parz} color={P.info} />
         <Kpi label="Senza data concl." value={nodata} color={P.orange} />
         <Kpi label="Bloccanti aperti" value={blkOpen} color={blkOpen > 0 ? P.bad : P.ok} />
-      </div>
+      </KpiGrid>
+
+      {crit.length > 0 && (
+        <div className="no-print mb-3 overflow-hidden rounded-xl border border-cm-line bg-cm-surface/70">
+          <div className="cmmono px-4 pt-3 font-cmmono text-[11px] font-semibold uppercase tracking-[0.08em] text-cm-accent">
+            Da tenere d'occhio · le più critiche (clic per aprire)
+          </div>
+          <InfiniteMovingCards
+            speed="slow"
+            className="!max-w-none"
+            itemClassName="!w-[300px] md:!w-[340px] !px-5 !py-4 !border !border-cm-line2 !bg-none !bg-cm-surface2 hover:!border-cm-accent transition-colors"
+            items={crit.map((x) => ({
+              quote: x.r.n.slice(0, 40) + " — " + x.r.cliente.slice(0, 28),
+              name: x.r.in_ritardo ? `In ritardo di ${x.r.ritardo} gg` : "Non in ritardo",
+              title: [ownerName(x.r), x.b ? `${x.b} bloccanti` : ""].filter((t) => t && t !== "—").join(" · ") || "Nessun owner",
+              accent: x.r.in_ritardo ? (x.r.ritardo > 90 ? P.bad : P.orange) : P.ok,
+              onClick: () => openModal(x.r.n),
+            }))}
+          />
+        </div>
+      )}
 
       {/* composizione bento: tessere di dimensione diversa */}
       <div className="grid grid-cols-1 gap-3 lg:grid-cols-6">

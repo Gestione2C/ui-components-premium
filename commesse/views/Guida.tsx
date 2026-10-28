@@ -5,6 +5,7 @@ import {
   TrendingUp, TriangleAlert, User, Wrench, XCircle, Zap, ClipboardList, CalendarClock, ArrowUpRight, Pin, Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { CardSpotlight } from "@/components/card-spotlight";
 import { ACTIONS, FLOWS, type GuidaOpt, type GuidaPlan, type GuidaQuestion } from "../engine/guida-data";
 import { Badge, Btn, Card } from "../ui/primitives";
 import { P } from "../theme";
@@ -188,12 +189,12 @@ function Home({ onStart }: { onStart: (id: string) => void }) {
       </div>
       <div className="grid grid-cols-[repeat(auto-fill,minmax(220px,1fr))] gap-3">
         {SCENARI.map((s) => (
+          <CardSpotlight key={s.id} radius={260} color="#16264a" className="!rounded-xl !border-cm-line2 !bg-cm-surface !p-0 transition-transform duration-150 hover:-translate-y-0.5 hover:!border-cm-accent">
           <button
-            key={s.id}
             type="button"
             onClick={() => onStart(s.id)}
             className={cn(
-              "flex cursor-pointer flex-col items-start gap-2 rounded-xl border border-cm-line2 bg-cm-surface p-[18px] text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-cm-accent hover:bg-cm-accent/[0.04]",
+              "relative z-10 flex h-full w-full cursor-pointer flex-col items-start gap-2 rounded-xl p-[18px] text-left",
               focusRing,
             )}
           >
@@ -211,6 +212,7 @@ function Home({ onStart }: { onStart: (id: string) => void }) {
               </span>
             )}
           </button>
+          </CardSpotlight>
         ))}
       </div>
     </div>

@@ -9,16 +9,21 @@ export const InfiniteMovingCards = ({
   speed = "fast",
   pauseOnHover = true,
   className,
+  itemClassName,
 }: {
   items: {
     quote: string;
     name: string;
     title: string;
+    /** optional: click handler (works on the looped copies too) and left accent color */
+    onClick?: () => void;
+    accent?: string;
   }[];
   direction?: "left" | "right";
   speed?: "fast" | "normal" | "slow";
   pauseOnHover?: boolean;
   className?: string;
+  itemClassName?: string;
 }) => {
   const containerRef = React.useRef<HTMLDivElement>(null);
   const scrollerRef = React.useRef<HTMLUListElement>(null);
@@ -79,6 +84,10 @@ export const InfiniteMovingCards = ({
     >
       <ul
         ref={scrollerRef}
+        onClick={(e) => {
+          const li = (e.target as HTMLElement).closest("li[data-idx]");
+          if (li) items[Number(li.getAttribute("data-idx"))]?.onClick?.();
+        }}
         className={cn(
           "flex w-max min-w-full shrink-0 flex-nowrap gap-4 py-4",
           start && "animate-scroll",
@@ -87,8 +96,14 @@ export const InfiniteMovingCards = ({
       >
         {items.map((item, idx) => (
           <li
-            className="relative w-[350px] max-w-full shrink-0 rounded-2xl border border-b-0 border-zinc-200 bg-[linear-gradient(180deg,#fafafa,#f5f5f5)] px-8 py-6 md:w-[450px] dark:border-zinc-700 dark:bg-[linear-gradient(180deg,#27272a,#18181b)]"
-            key={item.name}
+            className={cn(
+              "relative w-[350px] max-w-full shrink-0 rounded-2xl border border-b-0 border-zinc-200 bg-[linear-gradient(180deg,#fafafa,#f5f5f5)] px-8 py-6 md:w-[450px] dark:border-zinc-700 dark:bg-[linear-gradient(180deg,#27272a,#18181b)]",
+              item.onClick && "cursor-pointer",
+              itemClassName,
+            )}
+            style={item.accent ? { borderLeft: `3px solid ${item.accent}` } : undefined}
+            data-idx={idx}
+            key={idx + "-" + item.name}
           >
             <blockquote>
               <div

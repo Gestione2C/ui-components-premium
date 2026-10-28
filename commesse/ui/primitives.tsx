@@ -8,6 +8,7 @@ import { AREA_DEFAULT, P } from "../theme";
 import { PRIO_COLORS, PRIO_LABELS } from "../engine/constants";
 import type { Row } from "../engine/types";
 import { useS } from "./useS";
+import { AnimatedValue } from "./AnimatedValue";
 
 export const FIELD = "cm-field";
 
@@ -30,7 +31,14 @@ export function Card({
   id?: string;
 }) {
   return (
-    <section id={id} className={cn("cm-card relative mb-3 rounded-xl border border-cm-line bg-cm-surface", className)}>
+    <motion.section
+      id={id}
+      initial={{ opacity: 0, y: 10 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "0px 0px -40px 0px" }}
+      transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
+      className={cn("cm-card relative mb-3 rounded-xl border border-cm-line bg-cm-surface", className)}
+    >
       {glow && <GlowingEffect spread={34} glow disabled={false} proximity={48} inactiveZone={0.2} borderWidth={1.5} />}
       {title !== undefined && (
         <header className="flex items-center justify-between gap-3 px-4 pb-1 pt-3.5">
@@ -41,9 +49,11 @@ export function Card({
         </header>
       )}
       <div className={cn("relative px-4 pb-4 pt-2", bodyClass)}>{children}</div>
-    </section>
+    </motion.section>
   );
 }
+
+const KPI_ITEM = { hidden: { opacity: 0, y: 12 }, show: { opacity: 1, y: 0, transition: { duration: 0.35, ease: [0.16, 1, 0.3, 1] as any } } };
 
 export function Kpi({
   label,
@@ -60,6 +70,7 @@ export function Kpi({
 }) {
   return (
     <motion.div
+      variants={KPI_ITEM}
       whileHover={{ y: -2 }}
       transition={{ duration: 0.15 }}
       className="relative overflow-hidden rounded-xl border border-cm-line bg-cm-surface p-3.5"
@@ -70,7 +81,7 @@ export function Kpi({
       <div className="relative">
         <div className="mb-1.5 font-cmmono text-[10.5px] uppercase tracking-[0.08em] text-cm-muted">{label}</div>
         <div className="num mb-1 text-[26px] font-semibold leading-none" style={{ color }}>
-          {value}
+          <AnimatedValue value={value} />
         </div>
         <div className={cn("text-[11px] leading-snug text-cm-faint", tone === "pos" && "!text-cm-ok", tone === "neg" && "!text-cm-bad")}>
           {sub || " "}
@@ -79,8 +90,16 @@ export function Kpi({
     </motion.div>
   );
 }
+/** Griglia KPI: le tessere entrano una dopo l'altra. */
 export const KpiGrid = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <div className={cn("mb-4 grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-2.5", className)}>{children}</div>
+  <motion.div
+    initial="hidden"
+    animate="show"
+    variants={{ show: { transition: { staggerChildren: 0.05 } } }}
+    className={cn("mb-4 grid grid-cols-[repeat(auto-fill,minmax(170px,1fr))] gap-2.5", className)}
+  >
+    {children}
+  </motion.div>
 );
 
 /** Variazione rispetto alla settimana precedente (pos = verde, neg = rosso). */
@@ -195,7 +214,13 @@ export function Legend({ items, className }: { items: { color: string; label: Re
 export function Pbar({ value, color }: { value: number; color: string }) {
   return (
     <div className="mb-1 h-2 overflow-hidden rounded-full bg-white/[0.08]" role="progressbar" aria-valuenow={Math.round(Math.min(100, value))} aria-valuemin={0} aria-valuemax={100}>
-      <i className="block h-full rounded-full" style={{ width: Math.min(100, value) + "%", background: color }} />
+      <motion.i
+        className="block h-full rounded-full"
+        style={{ background: color }}
+        initial={{ width: 0 }}
+        animate={{ width: Math.min(100, value) + "%" }}
+        transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+      />
     </div>
   );
 }
