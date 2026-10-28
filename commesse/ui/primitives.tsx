@@ -211,7 +211,6 @@ export function PageHeader({ icon, title, desc, right }: { icon?: React.ReactNod
       </div>
       {desc && (
         <div className="no-print mb-4 max-w-[900px]">
-          <span className="sr-only">{desc}</span>
           <TextGenerateEffect words={desc} compact filter staggerDelay={0.035} duration={0.45} className="text-[13px]" wordClassName="!text-cm-faint" />
         </div>
       )}
