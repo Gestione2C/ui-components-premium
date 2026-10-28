@@ -26,6 +26,7 @@
     "App.tsx",
     "lib",
     "hooks",
-    "components"
+    "components",
+    "commesse"
   ]
 }

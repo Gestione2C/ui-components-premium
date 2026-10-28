@@ -7,6 +7,8 @@ import flattenColorPalette from "tailwindcss/lib/util/flattenColorPalette";
 export default {
   content: [
     "./index.html",
+    "./commesse.html",
+    "./commesse/**/*.{js,ts,jsx,tsx}",
     "./components/**/*.{js,ts,jsx,tsx}",
     "./*.{ts,tsx}",
     "./lib/**/*.{js,ts,jsx,tsx}",
@@ -17,6 +19,29 @@ export default {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
+        // Analizzatore commesse (token definiti in commesse/commesse.css)
+        cm: {
+          bg: "var(--cm-bg)",
+          surface: "var(--cm-surface)",
+          surface2: "var(--cm-surface2)",
+          surface3: "var(--cm-surface3)",
+          line: "var(--cm-line)",
+          line2: "var(--cm-line2)",
+          ink: "var(--cm-ink)",
+          muted: "var(--cm-muted)",
+          faint: "var(--cm-faint)",
+          accent: "var(--cm-accent)",
+          ok: "var(--cm-ok)",
+          bad: "var(--cm-bad)",
+          warn: "var(--cm-warn)",
+          orange: "var(--cm-orange)",
+          info: "var(--cm-info)",
+          pink: "var(--cm-pink)",
+        },
+      },
+      fontFamily: {
+        cmsans: ['"Fira Sans"', "ui-sans-serif", "system-ui", "sans-serif"],
+        cmmono: ['"Fira Code"', "ui-monospace", "SFMono-Regular", "monospace"],
       },
       borderRadius: {
         lg: "var(--radius)",

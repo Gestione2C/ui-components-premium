@@ -1,0 +1,209 @@
+@import "@fontsource/fira-sans/300.css";
+@import "@fontsource/fira-sans/400.css";
+@import "@fontsource/fira-sans/500.css";
+@import "@fontsource/fira-sans/600.css";
+@import "@fontsource/fira-sans/700.css";
+@import "@fontsource/fira-code/400.css";
+@import "@fontsource/fira-code/500.css";
+@import "@fontsource/fira-code/600.css";
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --cm-bg: #080c15;
+  --cm-surface: #0e1424;
+  --cm-surface2: #141b30;
+  --cm-surface3: #1a2340;
+  --cm-line: #212b45;
+  --cm-line2: #2d3a5c;
+  --cm-ink: #e8edf7;
+  --cm-muted: #9aa8c4;
+  --cm-faint: #7384a3;
+  --cm-accent: #22d3ee;
+  --cm-ok: #34d399;
+  --cm-bad: #fb7185;
+  --cm-warn: #fbbf24;
+  --cm-orange: #fb923c;
+  --cm-info: #a78bfa;
+  --cm-pink: #f472b6;
+  --cm-radius: 12px;
+  color-scheme: dark;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  background: var(--cm-bg);
+  color: var(--cm-ink);
+  font-family: "Fira Sans", ui-sans-serif, system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+.num,
+.mono {
+  font-family: "Fira Code", ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+/* focus visibile per la navigazione da tastiera */
+:where(button, a, input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid var(--cm-accent);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+/* scrollbar discreta */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--cm-line2) transparent;
+}
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--cm-line2);
+  border-radius: 4px;
+}
+
+/* campi di form */
+.cm-field {
+  background: var(--cm-surface2);
+  border: 1px solid var(--cm-line2);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-family: "Fira Code", ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--cm-ink);
+  min-height: 34px;
+  transition: border-color 0.15s;
+}
+.cm-field:hover {
+  border-color: var(--cm-faint);
+}
+.cm-field:focus {
+  outline: none;
+  border-color: var(--cm-accent);
+}
+.cm-field::placeholder {
+  color: var(--cm-faint);
+}
+select.cm-field {
+  cursor: pointer;
+  padding-right: 26px;
+}
+input[type="checkbox"] {
+  accent-color: var(--cm-accent);
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
+}
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: invert(0.8);
+  cursor: pointer;
+}
+
+/* tabelle dati */
+.cm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+.cm-table th {
+  text-align: left;
+  font-family: "Fira Code", ui-monospace, monospace;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--cm-accent);
+  padding: 9px 10px;
+  border-bottom: 1px solid var(--cm-line2);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  background: var(--cm-surface);
+  z-index: 1;
+}
+.cm-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+}
+.cm-table th.sortable:hover {
+  color: var(--cm-ink);
+}
+.cm-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--cm-line);
+  vertical-align: middle;
+}
+.cm-table tbody tr {
+  transition: background-color 0.12s;
+}
+.cm-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.035);
+}
+.cm-table tr:last-child td {
+  border-bottom: none;
+}
+.cm-table.compact td,
+.cm-table.compact th {
+  padding: 6px 8px;
+}
+
+@keyframes cm-fade {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.cm-fade {
+  animation: cm-fade 0.2s both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* stampa: report e piani sulla carta, senza interfaccia */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  html,
+  body,
+  #root,
+  .cm-shell,
+  .cm-main {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+  .cm-card {
+    break-inside: avoid;
+  }
+  * {
+    color: #111 !important;
+    background: transparent !important;
+    border-color: #bbb !important;
+    box-shadow: none !important;
+  }
+}
